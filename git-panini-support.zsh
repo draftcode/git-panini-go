@@ -23,7 +23,15 @@ function _git-panini() {
             '--verbose[more verbose]' \
             '--force[force apply]'
           ;;
-        (fetch|find-nonpanini|status)
+        (find-nonpanini)
+          _files
+          ;;
+        (status)
+          local -U panini_names
+          panini_names=(`git panini world --local`)
+          _values 'panini repos' ${panini_names:s/:/\\:/}
+          ;;
+        (fetch|status)
           _message 'no more arguments'
           ;;
       esac
