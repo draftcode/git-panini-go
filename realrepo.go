@@ -182,7 +182,7 @@ func (r *RealRepo) Difference(branch1, branch2 string) Difference {
 	if rel == Behind1 {
 		diff = len(strings.Split(r.GitExec("rev-list", branch1+".."+branch2), "\n")) - 1
 	} else {
-		diff = -len(strings.Split(r.GitExec("rev-list", branch2+".."+branch1), "\n")) - 1
+		diff = -len(strings.Split(r.GitExec("rev-list", branch2+".."+branch1), "\n")) + 1
 	}
 	return Difference{Diverged: false, Difference: diff}
 }
