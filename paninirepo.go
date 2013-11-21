@@ -17,6 +17,10 @@ type (
 	PaniniTags []PaniniTag
 )
 
+func (t PaniniTag) Name() string {
+	return strings.Replace(string(t), "panini:", "", 1)
+}
+
 func (t *PaniniTags) Len() int {
 	return len(*t)
 }
@@ -109,21 +113,19 @@ func (r *PaniniRepo) PaniniRepoPath() string {
 }
 
 // CreatePaniniRepo creates a Panini repository from a real repository.
-// func CreatePaniniRepo(path, tagName string) (r *PaniniRepo, err error) {
-// 	// TODO: add info to panini-info
-// 	r = NewPaniniRepo(tagName)
-// 	if err = exec.Command("git", "clone", "--mirror", path, r.Path()).Run(); err != nil {
-// 		r = nil
-// 		err = CannotCreateRepo
-// 		return
-// 	}
-// 	if err = exec.Command("git", "--git-dir", r.Path(), "remote", "rm", "origin").Run(); err != nil {
-// 		r = nil
-// 		err = CannotCreateRepo
-// 		return
-// 	}
-// 	return
-// }
+func CreatePaniniRepo(realRepo RealRepo) error {
+	if SyncBase == "" {
+		return CannotCreateRepo
+	}
+	path := filepath.Join(SyncBase, realRepo.tag.Name()+".git")
+	if err := exec.Command("git", "clone", "--mirror", realRepo.path, path).Run(); err != nil {
+		return CannotCreateRepo
+	}
+	if err := exec.Command("git", "--git-dir", path, "remote", "rm", "origin").Run(); err != nil {
+		return CannotCreateRepo
+	}
+	return nil
+}
 
 // Clone executes git clone to the specified filepath.
 // func (r *PaniniRepo) Clone(path string) error {
@@ -139,7 +141,7 @@ func (r *PaniniRepo) PaniniRepoPath() string {
 // }
 
 func (r *PaniniRepo) Name() string {
-	return strings.Replace(string(r.tag), "panini:", "", 1)
+	return r.tag.Name()
 }
 
 func (r *PaniniRepo) Tag() PaniniTag {

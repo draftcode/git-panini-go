@@ -9,7 +9,7 @@ function _git-panini() {
 
   case $state in
     (subcmd)
-      _values 'subcommand' world apply noop fetch find-nonpanini status
+      _values 'subcommand' world apply noop fetch find-nonpanini status syncable
       ;;
     (args)
       case $line[1] in
@@ -31,7 +31,7 @@ function _git-panini() {
           panini_names=(`git panini world --local`)
           _values 'panini repos' ${panini_names:s/:/\\:/}
           ;;
-        (fetch|status)
+        (fetch|status|syncable)
           _message 'no more arguments'
           ;;
       esac

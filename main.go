@@ -6,6 +6,7 @@ func main() {
 		new(worldCmd),
 		new(applyCmd),
 		new(noopCmd),
+		new(syncableCmd),
 
 		new(fetchCmd),
 		new(findNonPaniniCmd),
